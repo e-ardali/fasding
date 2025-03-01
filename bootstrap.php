@@ -1,0 +1,17 @@
+<?php
+
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
+
+// Vendor autoload
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Load env
+$dotenv = new \Symfony\Component\Dotenv\Dotenv();
+$dotenv->load(__DIR__ . '/.env');
+
+// Require includes
+require_once __DIR__ . '/inc/helpers.php';
+require_once __DIR__ . '/inc/starter.php';
