@@ -10,7 +10,7 @@ Follow these steps to set up the theme:
 
 ### 1. Clone the Repository
 ```sh
-git clone https://github.com/your-username/fasding.git wp-content/themes/fasding
+git clone https://github.com/e-ardali/fasding.git
 ```
 
 ### 2. Install Dependencies
