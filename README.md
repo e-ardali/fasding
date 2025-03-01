@@ -8,11 +8,6 @@ Designed with **Vite**, **Tailwind CSS**, and **PostCSS**, Fasding ensures a mod
 
 Follow these steps to set up the theme:
 
-### 1. 
-```sh
-git clone https://github.com/e-ardali/fasding.git
-```
-
 ### 1. Clone the Repository
 ```sh
 git clone https://github.com/e-ardali/fasding.git
