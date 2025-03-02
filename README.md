@@ -8,12 +8,17 @@ Designed with **Vite**, **Tailwind CSS**, and **PostCSS**, Fasding ensures a mod
 
 Follow these steps to set up the theme:
 
-### 1. Clone the Repository
+### 1. Navigate to your wordpress themes directory
+```sh
+cd wp-content/themes
+```
+
+### 2. Clone the Repository
 ```sh
 git clone https://github.com/e-ardali/fasding.git
 ```
 
-### 2. Install Dependencies
+### 3. Install Dependencies
 Navigate to the theme directory and install required dependencies:
 
 ```sh
