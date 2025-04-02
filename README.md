@@ -18,7 +18,15 @@ cd wp-content/themes
 git clone https://github.com/e-ardali/fasding.git
 ```
 
-### 3. Install Dependencies
+Or download the repository as a ZIP file and extract it in the themes directory.
+
+### 3. Create a `.env` File
+Duplicate the `.env.example` file and rename it to `.env`:
+```sh
+cp .env.example .env
+```
+
+### 4. Install Dependencies
 Navigate to the theme directory and install required dependencies:
 
 ```sh
@@ -27,17 +35,17 @@ composer install
 npm install
 ```
 
-### 3. Build the Assets
+### 5. Build the Assets
 Run the following command to compile assets:
 
 ```sh
 npm run build
 ```
 
-### 4. Activate the Theme
+### 6. Activate the Theme
 Go to **WordPress Admin Panel → Appearance → Themes** and activate **Fasding**.
 
-### 5. Install Elementor
+### 7. Install Elementor
 Since Fasding is designed specifically for **Elementor**, make sure you have the Elementor plugin installed:
 
 ```sh
