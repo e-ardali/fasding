@@ -6,6 +6,9 @@ if (have_posts()) :
         <div>
             <?php the_title(); ?>
         </div>
+        <div>
+            <?php the_content(); ?>
+        </div>
     <?php endwhile;
 endif;
 ?>

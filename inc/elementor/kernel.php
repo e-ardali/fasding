@@ -1,16 +1,14 @@
 <?php
 
-namespace Elementor;
-
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-function register_widgets($widgets_manager): void
-{
-    require_once(__DIR__ . '/inc/elementor/widgets/Sample.php');
+function register_widgets( $widgets_manager ) {
 
-    $widgets_manager->register(new \Elementor\Sample());
+    require_once( __DIR__ . '/widgets/oembed-widget.php' );
+
+    $widgets_manager->register( new \Elementor_oEmbed_Widget() );
+
 }
-
-add_action('elementor/widgets/register', 'register_sample_widget');
+add_action( 'elementor/widgets/register', 'register_widgets' );
