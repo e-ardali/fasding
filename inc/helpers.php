@@ -10,7 +10,9 @@ if (!function_exists('assets_manifest')) {
         $manifest = [];
         if ($_ENV['MANIFEST_PATH']) {
             $path = get_template_directory() . '/' . $_ENV['ASSETS_DIRECTORY'] . '/' . $_ENV['MANIFEST_PATH'];
-            $manifest = json_decode(file_get_contents($path), true);
+            if (file_exists($path)) {
+                $manifest = json_decode(file_get_contents($path), true);
+            }
         }
         return $manifest;
     }
