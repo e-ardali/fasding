@@ -8,6 +8,8 @@
 </head>
 <body <?php body_class('body'); ?>>
 
-<header>
+<?php if ( is_singular('fasding_layout') ) { ?>
+    <header>
     // Header
 </header>
+<?php } ?>
