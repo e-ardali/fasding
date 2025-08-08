@@ -1,5 +1,9 @@
 <?php
 
+/**
+ *
+ * Register a post type for headers and footers of pages
+ */
 register_post_type('fasding_layout', [
     'labels' => [
         'name' => __('Template Parts', 'textdomain'),
@@ -17,8 +21,13 @@ register_post_type('fasding_layout', [
     'exclude_from_search' => true,
     'has_archive' => false,
     'rewrite' => false,
+    'show_in_rest' => true
 ]);
 
+/**
+ * Register a custom query variable for Elementor preview for the layouts
+ *
+ */
 add_action('parse_query', function ($query) {
     if (!is_admin() && isset($_GET['elementor-preview']) && isset($_GET['post'])) {
         $post_id = absint($_GET['post']);
@@ -36,6 +45,9 @@ add_action('parse_query', function ($query) {
     }
 });
 
+/**
+ * Redirects to 404 if a user tries to access a layout without being logged in
+ */
 add_action('template_redirect', function () {
     if (
         is_singular('fasding_layout') &&
@@ -50,3 +62,62 @@ add_action('template_redirect', function () {
         exit;
     }
 });
+
+/**
+ * Add a meta box to select the layout type (header or footer)
+ * @return void
+ */
+function fasding_layout_add_meta_box(): void
+{
+    add_meta_box(
+        'fasding_layout_type_meta_box',
+        __('Layout Type', 'fasding'),
+        'fasding_layout_type_meta_box_callback',
+        'fasding_layout', // Custom Post Type
+        'side'
+    );
+}
+
+add_action('add_meta_boxes', 'fasding_layout_add_meta_box');
+
+/**
+ * Callback function for the layout type meta box
+ * @param $post
+ * @return void
+ */
+function fasding_layout_type_meta_box_callback($post): void
+{
+    $value = get_post_meta($post->ID, '_fasding_layout_type', true);
+    ?>
+    <label for="fasding_layout_type"><?php _e('Select layout type:', 'fasding'); ?></label><br>
+    <select name="fasding_layout_type" id="fasding_layout_type">
+        <option value=""><?php _e('-- Select --', 'fasding'); ?></option>
+        <option value="header" <?php selected($value, 'header'); ?>>
+            <?php _e('Header', 'fasding'); ?>
+        </option>
+        <option value="footer" <?php selected($value, 'footer'); ?>>
+            <?php _e('Footer', 'fasding'); ?>
+        </option>
+    </select>
+    <?php
+}
+
+/**
+ * Save the selected layout type when the post is saved
+ * @param $post_id
+ * @return void
+ */
+function fasding_layout_save_meta_box($post_id): void
+{
+    if (array_key_exists('fasding_layout_type', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_fasding_layout_type',
+            sanitize_text_field($_POST['fasding_layout_type'])
+        );
+    }
+}
+
+add_action('save_post', 'fasding_layout_save_meta_box');
+
+
