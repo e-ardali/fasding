@@ -8,8 +8,7 @@
 </head>
 <body <?php body_class('body'); ?>>
 
-<?php if (get_post_type() !== 'fasding_layout') : ?>
-<header>
-    // Header
-</header>
-<?php endif ?>
+
+<?php if (get_post_type() !== 'fasding_layout') :
+    get_template_part('parts/layouts/header');
+endif ?>
