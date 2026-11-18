@@ -166,7 +166,7 @@ class Elementor_oEmbed_Widget extends \Elementor\Widget_Base {
         $html = wp_oembed_get( $settings['url'] );
         ?>
         <div class="oembed-elementor-widget">
-            <?php echo ( $html ) ? $html : $settings['url']; ?>
+            <?php echo ( $html ) ? $html : esc_html( $settings['url'] ); ?>
         </div>
         <?php
     }
