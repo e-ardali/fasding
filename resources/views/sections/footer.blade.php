@@ -1,0 +1,1 @@
+@php(\App\renderFasdingLocation('footer'))

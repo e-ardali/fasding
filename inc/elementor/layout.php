@@ -4,62 +4,34 @@
  *
  * Register a post type for headers and footers of pages
  */
-register_post_type('fasding_layout', [
-    'labels' => [
-        'name' => __('Template Parts', 'textdomain'),
-        'singular_name' => __('Template Part', 'textdomain'),
-        'menu_name' => __('Template Parts', 'textdomain'),
-        'name_admin_bar' => __('Template Part', 'textdomain'),
-        'add_new' => __('Add New', 'textdomain'),
-        'add_new_item' => __('Add New Template Part', 'textdomain'),
-    ],
-    'public' => false,
-    'show_ui' => true,
-    'supports' => ['title', 'editor', 'elementor'],
-    'show_in_menu' => 'themes.php',
-    'publicly_queryable' => true,
-    'exclude_from_search' => true,
-    'has_archive' => false,
-    'rewrite' => false,
-    'show_in_rest' => true
-]);
-
-/**
- * Register a custom query variable for Elementor preview for the layouts
- *
- */
-add_action('parse_query', function ($query) {
-    if (!is_admin() && isset($_GET['elementor-preview']) && isset($_GET['post'])) {
-        $post_id = absint($_GET['post']);
-        $post = get_post($post_id);
-
-        if ($post && $post->post_type === 'fasding_layout') {
-            $query->is_single = true;
-            $query->is_singular = true;
-            $query->is_home = false;
-            $query->is_page = false;
-            $query->is_archive = false;
-            $query->is_post_type_archive = false;
-            $query->is_main_query = true;
-        }
-    }
+add_action('init', function () {
+    register_post_type('fasding_layout', [
+        'labels' => [
+            'name' => __('Template Parts', 'fasding'),
+            'singular_name' => __('Template Part', 'fasding'),
+            'menu_name' => __('Template Parts', 'fasding'),
+            'name_admin_bar' => __('Template Part', 'fasding'),
+            'add_new' => __('Add New', 'fasding'),
+            'add_new_item' => __('Add New Template Part', 'fasding'),
+        ],
+        'public' => false,
+        'show_ui' => true,
+        'supports' => ['title', 'editor', 'elementor'],
+        'show_in_menu' => 'themes.php',
+        'publicly_queryable' => true,
+        'exclude_from_search' => true,
+        'has_archive' => false,
+        'rewrite' => false,
+        'show_in_rest' => true
+    ]);
 });
 
-/**
- * Redirects to 404 if a user tries to access a layout without being logged in
- */
 add_action('template_redirect', function () {
-    if (
-        is_singular('fasding_layout') &&
-        !is_user_logged_in() &&
-        !isset($_GET['elementor-preview'])
-    ) {
+    if (is_singular('fasding_layout') && ! current_user_can('edit_post', get_queried_object_id())) {
         global $wp_query;
         $wp_query->set_404();
         status_header(404);
         nocache_headers();
-        include(get_query_template('404'));
-        exit;
     }
 });
 
@@ -87,6 +59,7 @@ add_action('add_meta_boxes', 'fasding_layout_add_meta_box');
  */
 function fasding_layout_type_meta_box_callback($post): void
 {
+    wp_nonce_field('fasding_layout_type', 'fasding_layout_nonce');
     $value = get_post_meta($post->ID, '_fasding_layout_type', true);
     ?>
     <label for="fasding_layout_type"><?php _e('Select layout type:', 'fasding'); ?></label><br>
@@ -109,15 +82,16 @@ function fasding_layout_type_meta_box_callback($post): void
  */
 function fasding_layout_save_meta_box($post_id): void
 {
-    if (array_key_exists('fasding_layout_type', $_POST)) {
-        update_post_meta(
-            $post_id,
-            '_fasding_layout_type',
-            sanitize_text_field($_POST['fasding_layout_type'])
-        );
+    $nonce = $_POST['fasding_layout_nonce'] ?? '';
+    $type = $_POST['fasding_layout_type'] ?? null;
+
+    if (! is_string($nonce) || ! wp_verify_nonce(wp_unslash($nonce), 'fasding_layout_type')
+        || ! current_user_can('edit_post', $post_id) || wp_is_post_revision($post_id)
+        || ! in_array($type, ['', 'header', 'footer'], true)) {
+        return;
     }
+
+    update_post_meta($post_id, '_fasding_layout_type', $type);
 }
 
-add_action('save_post', 'fasding_layout_save_meta_box');
-
-
+add_action('save_post_fasding_layout', 'fasding_layout_save_meta_box');

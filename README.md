@@ -1,78 +1,44 @@
-# Fasding - The Ultimate Elementor Landing Page Theme for WordPress
+# Fasding
 
-Fasding is a lightweight and developer-friendly WordPress theme **built exclusively for Elementor**. It is optimized for high-performance landing pages and provides a seamless drag-and-drop experience with **Elementor Page Builder**.
+Fasding is a WordPress theme for building Elementor landing pages. It uses [Roots Sage](https://github.com/roots/sage), Acorn, Blade, Vite, and Tailwind CSS. The frontend loads Tailwind utilities without Preflight so Elementor retains control over its element styles.
 
-Designed with **Vite**, **Tailwind CSS**, and **PostCSS**, Fasding ensures a modern development workflow while offering total flexibility in page design.
+## Setup
 
-## Installation
+Use WordPress 6.6+, PHP 8.3+, Composer, and Node.js 20.19+ in the 20.x series or 22.12+.
 
-Follow these steps to set up the theme:
+1. Clone the repository into `wp-content/themes/fasding`.
+2. From the theme directory, run `composer install`, `npm ci`, and `npm run build`.
+3. Activate Fasding and Elementor in WordPress.
 
-### 1. Navigate to your wordpress themes directory
-```sh
-cd wp-content/themes
-```
+Deploy the built `public/build` assets and Composer's `vendor` directory with the theme. For development, set `APP_URL` to your local WordPress URL if needed and run `npm run dev`. Allow WordPress to write to its content/cache directory for Acorn.
 
-### 2. Clone the Repository
-```sh
-git clone https://github.com/e-ardali/fasding.git
-```
+## Landing pages
 
-Or download the repository as a ZIP file and extract it in the themes directory.
+Use **Fasding Landing Page** for a full-width content area with the site's header and footer, or **Elementor Canvas** for a standalone landing page. **Elementor Full Width** also uses the theme's header and footer. Elementor can edit the default page template as well.
 
-### 3. Create a `.env` File
-Duplicate the `.env.example` file and rename it to `.env`:
-```sh
-cp .env.example .env
-```
+Elementor Pro Theme Builder can supply the header and footer. Where no matching Pro template exists, Fasding uses the latest published template part of the corresponding type under **Appearance → Template Parts**. Enable **Template Parts** under **Elementor → Settings → Post Types** to edit them with Elementor. Existing template parts and oEmbed widgets retain their stored identifiers.
 
-### 4. Install Dependencies
-Navigate to the theme directory and install required dependencies:
+The legacy **Contact** page template now renders the page's editable content. Add any contact details that were previously hardcoded to the page itself before deploying if a site still uses that template.
+
+## Updating Sage
+
+[`SAGE_VERSION`](SAGE_VERSION) records the stable Sage release imported into Fasding. Fasding keeps its own theme identity and consumes upstream changes through a three-way Git patch. Use a clean branch from Fasding's main branch and pick a stable tag from [Sage releases](https://github.com/roots/sage/releases).
 
 ```sh
-cd fasding
-composer install
-npm install
+git switch -c update/sage-vX.Y.Z
+upstream_version=$(cat SAGE_VERSION)
+target_version=vX.Y.Z
+git fetch --no-tags https://github.com/roots/sage.git \
+    "refs/tags/$upstream_version:refs/sage/$upstream_version" \
+    "refs/tags/$target_version:refs/sage/$target_version"
+git diff --binary "refs/sage/$upstream_version" "refs/sage/$target_version" -- \
+    . ':(exclude).github' ':(exclude).gitattributes' \
+    ':(exclude)README.md' ':(exclude)screenshot.png' |
+    git apply --3way --index
 ```
 
-### 5. Build the Assets
-Run the following command to compile assets:
-
-```sh
-npm run build
-```
-
-### 6. Activate the Theme
-Go to **WordPress Admin Panel → Appearance → Themes** and activate **Fasding**.
-
-### 7. Install Elementor
-Since Fasding is designed specifically for **Elementor**, make sure you have the Elementor plugin installed:
-
-```sh
-wp plugin install elementor --activate
-```
-
-Or install it manually from the **WordPress Plugin Directory**.
-
-## Development Mode
-For a better development experience, use:
-
-```sh
-npm run dev
-```
-
-This will enable hot-reloading with Vite.
-
-## Why Fasding for Elementor?
-- 🖌 **Built 100% for Elementor** – No bloated features, just pure Elementor compatibility.
-- ⚡ **Lightweight & Fast** – Optimized for high performance and SEO.
-- 🎨 **Full Design Freedom** – Customize every section easily.
-- 🔥 **Modern Tech Stack** – Vite, Tailwind CSS, and PostCSS for a smooth development workflow.
+If Git reports conflicts or a patch it could not apply, reconcile those files against the release diff before changing `SAGE_VERSION`. Preserve Fasding's theme metadata, Elementor integration, and Vite base when reconciling shared files. Update dependencies and the npm lockfile as needed, build the assets, and check the landing template, Elementor editor, Canvas, and Full Width in a staging WordPress site before merging the update.
 
 ## License
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
----
-
-🚀 **Fasding** is an open-source project. Contributions and feedback are welcome!
-
+Fasding and Sage are MIT-licensed. See [Fasding's license](LICENSE) and [Sage's license](LICENSE.md).
